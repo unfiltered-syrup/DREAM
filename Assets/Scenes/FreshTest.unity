@@ -137,7 +137,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6661854061840728622, guid: 30f43bc55d117e04b9ea6c9f098b8823, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 4.11
+      value: 4.38
       objectReference: {fileID: 0}
     - target: {fileID: 6661854061840728622, guid: 30f43bc55d117e04b9ea6c9f098b8823, type: 3}
       propertyPath: m_LocalPosition.z
@@ -304,7 +304,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5272704659989185598, guid: e5bad9f225a5a494e9eb15cc7311c928, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 4.11
+      value: 4.38
       objectReference: {fileID: 0}
     - target: {fileID: 5272704659989185598, guid: e5bad9f225a5a494e9eb15cc7311c928, type: 3}
       propertyPath: m_LocalPosition.z
@@ -483,6 +483,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5009487242912557263, guid: 72b9da04a60cdc9469aa66fe74ef34a7, type: 3}
   m_PrefabInstance: {fileID: 1841059701}
   m_PrefabAsset: {fileID: 0}
+--- !u!20 &1752606834 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 4695108043079144746, guid: 30f43bc55d117e04b9ea6c9f098b8823, type: 3}
+  m_PrefabInstance: {fileID: 319402989}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1769941265
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -554,7 +559,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5009487242912557263, guid: 72b9da04a60cdc9469aa66fe74ef34a7, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 4.11
+      value: 4.38
       objectReference: {fileID: 0}
     - target: {fileID: 5009487242912557263, guid: 72b9da04a60cdc9469aa66fe74ef34a7, type: 3}
       propertyPath: m_LocalPosition.z
@@ -588,6 +593,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5479282064454105695, guid: 72b9da04a60cdc9469aa66fe74ef34a7, type: 3}
+      propertyPath: playerCamera
+      value: 
+      objectReference: {fileID: 1752606834}
     - target: {fileID: 8266565927581068999, guid: 72b9da04a60cdc9469aa66fe74ef34a7, type: 3}
       propertyPath: m_Name
       value: Player
