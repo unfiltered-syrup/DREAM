@@ -201,8 +201,11 @@ MonoBehaviour:
   constraints: {x: 0.3, y: 0.36}
   forearmTransform: {fileID: 4591759383842985730}
   pivotTransform: {fileID: 5990361967235572908}
-  phoneSpeedWhileActive: 40
-  phoneSpeedWhileInactive: 20
+  phoneSpeedWhileActive: 4
+  phoneSpeedWhileInactive: 2
+  inputSensitivity: 0.0025
+  idleFallSpeed: 0.25
+  smoothTime: 0.1
 --- !u!65 &2166044582564051302
 BoxCollider:
   m_ObjectHideFlags: 0
