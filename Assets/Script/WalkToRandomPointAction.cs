@@ -1,7 +1,7 @@
 using System;
 using Unity.Behavior;
 using UnityEngine;
-using UnityEngine.AI; // Required for NavMesh
+using UnityEngine.AI;
 using Action = Unity.Behavior.Action;
 using Unity.Properties;
 
