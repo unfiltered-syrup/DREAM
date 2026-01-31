@@ -17,9 +17,14 @@ public partial class SpawnTextAction : Action
         string[] textOptions = new string[] 
         { 
             "!", 
-            "Sus",
+            "sus",
             "67",
-            "Hi Plum",
+            "69",
+            "frfr",
+            "no cap",
+            "bruh",
+            "what the helly",
+            "gooner", "gay", "sex", "femboy", "oiiai", "mogged", 
         };
 
         if (GameObject == null || TextPrefab.Value == null)
@@ -33,7 +38,7 @@ public partial class SpawnTextAction : Action
 
         GameObject newTextObj = UnityEngine.Object.Instantiate(TextPrefab.Value, spawnPos, Quaternion.identity);
 
-        TMP_Text tmp = newTextObj.GetComponent<TMP_Text>();
+        TMP_Text tmp = newTextObj.GetComponent<TextMeshProUGUI>();
         if (tmp != null)
         {
             tmp.text = selectedText;
