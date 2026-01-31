@@ -19,10 +19,16 @@ public class PhoneController : MonoBehaviour
     [SerializeField] private float inputSensitivity = 0.0025f;
     [SerializeField] private float idleFallSpeed = 0.25f;
     [SerializeField] private float smoothTime = 0.1f;
+    
+    [SerializeField] float shakeFrequency = 12f;
+    [SerializeField] float calmMagnitude = 0.02f;
+    [SerializeField] float shakeMagnitude = 1f;
+    [SerializeField] PlayerLogic playerLogic;
 
     void Start()
     {
         lastMousePosition = Mouse.current.position.ReadValue();
+        playerLogic = FindObjectOfType<PlayerLogic>();
     }
 
     void Update()
@@ -76,7 +82,8 @@ public class PhoneController : MonoBehaviour
 
         float speed = isInteracting ? phoneSpeedWhileActive : phoneSpeedWhileInactive;
 
-        Vector3 targetPosition = transform.localPosition + inputVector * speed * Time.deltaTime;
+        Vector3 targetPosition = transform.localPosition + inputVector * speed * Time.deltaTime 
+                                                         + GetShakeOffset(Mathf.Lerp(calmMagnitude, shakeMagnitude, playerLogic.EyeContactDuration / 100f));;
 
         transform.localPosition = Vector3.SmoothDamp(
             transform.localPosition,
@@ -96,5 +103,15 @@ public class PhoneController : MonoBehaviour
         {
             // Cursor.lockState = CursorLockMode.Locked;
         }
+    }
+    
+    Vector3 GetShakeOffset(float magnitude)
+    {
+        float t = Time.time * shakeFrequency;
+
+        float x = Mathf.PerlinNoise(t, 0.1f) - 0.5f;
+        float y = Mathf.PerlinNoise(0.1f, t) - 0.5f;
+
+        return new Vector3(x, y, 0f) * magnitude;
     }
 }
