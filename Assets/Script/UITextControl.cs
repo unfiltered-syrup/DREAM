@@ -3,12 +3,12 @@ using TMPro;
 
 public class EyeContactUI : MonoBehaviour
 {
-    private TMP_Text _textComponent;
+    private TextMeshProUGUI _textComponent;
     private PlayerLogic _playerLogic;
 
     void Start()
     {
-        _textComponent = GetComponent<TMP_Text>();
+        _textComponent = GetComponent<TextMeshProUGUI>();
 
         GameObject playerObj = GameObject.FindWithTag("Player");
 
