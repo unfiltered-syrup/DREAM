@@ -23,7 +23,6 @@ public class SetAnimatorSpeed : MonoBehaviour
     void Update()
     {
         float currentSpeed = _agent.velocity.magnitude;
-        Debug.Log("Curspeed" + currentSpeed);
         _animator.SetFloat(_speedHash, currentSpeed, animationSmoothTime, Time.deltaTime);
     }
 }

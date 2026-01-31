@@ -6,6 +6,7 @@ TagManager:
   tags:
   - NPC
   - Head
+  - Chair
   layers:
   - Default
   - TransparentFX
