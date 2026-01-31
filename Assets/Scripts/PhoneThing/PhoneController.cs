@@ -5,53 +5,96 @@ using UnityEngine.InputSystem;
 
 public class PhoneController : MonoBehaviour
 {
-    private Vector3 startingMousePosition;
-    private Vector3 mousePosition;
     [SerializeField] private CinemachineInputAxisController cameraController;
     [SerializeField] private Vector2 constraints;
     [SerializeField] private Transform forearmTransform;
     [SerializeField] private Transform pivotTransform;
     
-    [SerializeField] private float phoneSpeedWhileActive = 40f;
-    [SerializeField] private float phoneSpeedWhileInactive = 20f;
+    [SerializeField] private float phoneSpeedWhileActive = 4f;
+    [SerializeField] private float phoneSpeedWhileInactive = 2f;
 
-    private void Start()
+    private Vector3 lastMousePosition;
+    private Vector3 smoothVelocity;
+
+    [SerializeField] private float inputSensitivity = 0.0025f;
+    [SerializeField] private float idleFallSpeed = 0.25f;
+    [SerializeField] private float smoothTime = 0.1f;
+
+    void Start()
     {
-        startingMousePosition = new Vector3(Screen.width / 2f, Screen.height / 2f, 0);
+        lastMousePosition = Mouse.current.position.ReadValue();
     }
 
-    // Update is called once per frame
     void Update()
     {
         forearmTransform.position = pivotTransform.position;
+        float t = Mathf.InverseLerp(0f, constraints.x, Mathf.Abs(transform.localPosition.x));
+        float targetY = Mathf.Sign(transform.localPosition.x) * 30f;
         
+        float u = Mathf.InverseLerp(0f, constraints.y, Mathf.Abs(transform.localPosition.y));
+        float targetX = Mathf.Sign(transform.localPosition.y) * 10f;
+        
+        transform.localRotation = Quaternion.Lerp(
+            transform.localRotation,
+            Quaternion.Euler(targetX * u, targetY * t, 0f),
+            Time.deltaTime * 8f
+        );
+
+        bool isInteracting = PlayerController.Instance.input.Player.Interact.IsPressed();
+
         if (PlayerController.Instance.input.Player.Interact.WasPressedThisFrame())
         {
-            Cursor.lockState = CursorLockMode.None;
-            // cameraController.enabled = false;
-            // Cursor.visible = true;
-            // cameraObject.SetActive(false);
+            // Cursor.lockState = CursorLockMode.None;
+            lastMousePosition = Mouse.current.position.ReadValue();
         }
-        
-        mousePosition = Mouse.current.position.ReadValue();
-        var joystickInput = PlayerController.Instance.input.Player.Look.ReadValue<Vector2>();
-        mousePosition += new Vector3(joystickInput.x, joystickInput.y, 0) * 10f;
-        Vector3 difference = PlayerController.Instance.input.Player.Interact.IsPressed() ? (mousePosition - startingMousePosition) : Vector3.down;
-        
-        var targetPosition = transform.localPosition + new Vector3(difference.normalized.x, difference.normalized.y, 0) * Time.deltaTime;
-        transform.localPosition = Vector3.Lerp(transform.localPosition, targetPosition, (PlayerController.Instance.input.Player.Interact.IsPressed() ? phoneSpeedWhileActive : phoneSpeedWhileInactive) * Time.deltaTime);
+
+        Vector3 inputVector = Vector3.zero;
+
+        if (isInteracting)
+        {
+            // Mouse delta → direction
+            Vector3 currentMouse = Mouse.current.position.ReadValue();
+            Vector3 mouseDelta = currentMouse - lastMousePosition;
+            lastMousePosition = currentMouse;
+
+            // Joystick
+            Vector2 joystick = PlayerController.Instance.input.Player.Look.ReadValue<Vector2>();
+
+            inputVector = new Vector3(
+                mouseDelta.x * inputSensitivity + joystick.x,
+                mouseDelta.y * inputSensitivity + joystick.y,
+                0f
+            );
+
+            inputVector = Vector3.ClampMagnitude(inputVector, 1f);
+        }
+        else
+        {
+            // Idle fall
+            inputVector = Vector3.down * idleFallSpeed;
+        }
+
+        float speed = isInteracting ? phoneSpeedWhileActive : phoneSpeedWhileInactive;
+
+        Vector3 targetPosition = transform.localPosition + inputVector * speed * Time.deltaTime;
+
+        transform.localPosition = Vector3.SmoothDamp(
+            transform.localPosition,
+            targetPosition,
+            ref smoothVelocity,
+            smoothTime
+        );
+
+        // Clamp bounds
         transform.localPosition = new Vector3(
             Mathf.Clamp(transform.localPosition.x, -constraints.x, constraints.x),
-            Mathf.Clamp(transform.localPosition.y, -constraints.y, constraints.y),
+            Mathf.Clamp(transform.localPosition.y, -constraints.y, constraints.y - 0.125f),
             transform.localPosition.z
         );
-        
+
         if (PlayerController.Instance.input.Player.Interact.WasReleasedThisFrame())
         {
-            Cursor.lockState = CursorLockMode.Locked;
-            // cameraController.enabled = true;
-            // Cursor.visible = false;
-            // cameraObject.SetActive(true);
+            // Cursor.lockState = CursorLockMode.Locked;
         }
     }
 }
