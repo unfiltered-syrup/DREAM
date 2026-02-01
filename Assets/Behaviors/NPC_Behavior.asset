@@ -1117,10 +1117,6 @@ MonoBehaviour:
           rid: 1578048803453796902
         LimitToYAxis:
           rid: 1578048803453796903
-        RotationSpeed:
-          rid: 1578048803453796595
-        PlayerInRange:
-          rid: 1578048803453796596
     - rid: 1578048803453796832
       type: {class: SetVariableValueAction, ns: Unity.Behavior, asm: Unity.Behavior}
       data:
