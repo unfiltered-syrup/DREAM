@@ -3,7 +3,12 @@ guid: f7b3411bf4d8a6c44a608173dfb7a40c
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: BlackBoardStandMat
+    second: {fileID: 2100000, guid: 58a4e5d9de372af4d86956e59120abe6, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
