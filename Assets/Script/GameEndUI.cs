@@ -6,7 +6,7 @@ public class GameEndUI : MonoBehaviour
 {
     public static GameEndUI Instance { get; private set; }
 
-
+    [SerializeField] private GameObject backgroundObject;
     [SerializeField] private GameObject winTextObject;
     [SerializeField] private GameObject loseTextObject;
 
@@ -67,6 +67,7 @@ public class GameEndUI : MonoBehaviour
     {
         _gameEnded = true;
 
+        backgroundObject.SetActive(true);
         if (winTextObject != null) winTextObject.SetActive(isWin);
         if (loseTextObject != null) loseTextObject.SetActive(!isWin);
 
