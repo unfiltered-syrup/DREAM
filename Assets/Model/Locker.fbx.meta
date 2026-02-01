@@ -3,7 +3,12 @@ guid: 508df54d56ae5f644b1a56715cff2b3c
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: LockerMat
+    second: {fileID: 2100000, guid: b4695b5b1cd31014c94fceb17de76a01, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
