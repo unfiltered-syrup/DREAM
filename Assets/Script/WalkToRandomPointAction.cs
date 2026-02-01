@@ -6,7 +6,7 @@ using Action = Unity.Behavior.Action;
 using Unity.Properties;
 
 [Serializable, GeneratePropertyBag]
-[NodeDescription(name: "Walk To Random Point", story: "Agent walks to random point (yields to others)", category: "Action", id: "walk_random_low_priority")]
+[NodeDescription(name: "Walk To Random Point", story: "Agent walks to reachable random point", category: "Action", id: "walk_random_smart")]
 public partial class WalkToRandomPointAction : Action
 {
     [SerializeReference] public BlackboardVariable<float> SearchRadius = new BlackboardVariable<float>(10f);
@@ -17,6 +17,9 @@ public partial class WalkToRandomPointAction : Action
     private NavMeshAgent _agent;
     private Animator _animator;
     private int _speedHash;
+    
+    // Cache the path object to avoid garbage collection allocation every frame
+    private NavMeshPath _pathCheck; 
 
     protected override Status OnStart()
     {
@@ -39,14 +42,24 @@ public partial class WalkToRandomPointAction : Action
         }
 
         _agent.speed = MoveSpeed.Value;
-
         _agent.avoidancePriority = 99; 
+        _pathCheck = new NavMeshPath();
 
-        Vector3 randomPoint = GetRandomPoint(GameObject.transform.position, SearchRadius.Value);
-        
-        if (randomPoint != Vector3.positiveInfinity)
+        for (int i = 0; i < 10; i++)
         {
-            _agent.SetDestination(randomPoint);
+            Vector3 candidatePoint = GetRandomNavMeshPoint(GameObject.transform.position, SearchRadius.Value);
+
+            if (candidatePoint == Vector3.positiveInfinity) 
+                continue;
+
+
+            _agent.CalculatePath(candidatePoint, _pathCheck);
+            if (_pathCheck.status != NavMeshPathStatus.PathComplete) 
+                continue; 
+            if (IsCrowded(candidatePoint))
+                continue; 
+
+            _agent.SetDestination(candidatePoint);
             return Status.Running;
         }
         
@@ -85,9 +98,9 @@ public partial class WalkToRandomPointAction : Action
         if (_animator != null) _animator.SetFloat(_speedHash, 0f);
     }
 
-    private Vector3 GetRandomPoint(Vector3 center, float range)
+    private Vector3 GetRandomNavMeshPoint(Vector3 center, float range)
     {
-        for (int i = 0; i < 30; i++)
+        for (int i = 0; i < 10; i++)
         {
             Vector3 randomPoint = center + UnityEngine.Random.insideUnitSphere * range;
             NavMeshHit hit;
@@ -97,5 +110,22 @@ public partial class WalkToRandomPointAction : Action
             }
         }
         return Vector3.positiveInfinity;
+    }
+
+    private bool IsCrowded(Vector3 targetPos)
+    {
+        // Check for NPCs within 3 units of the target
+        Collider[] hits = Physics.OverlapSphere(targetPos, 3.0f);
+        int npcCount = 0;
+
+        foreach (Collider hit in hits)
+        {
+            if (hit.CompareTag("NPC"))
+            {
+                npcCount++;
+            }
+        }
+
+        return npcCount > 1; 
     }
 }

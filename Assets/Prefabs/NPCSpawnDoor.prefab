@@ -60,7 +60,7 @@ Transform:
   m_GameObject: {fileID: 8547417350284428624}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -7.98, y: 1.35, z: 14.31221}
+  m_LocalPosition: {x: 4.571162, y: 1.8654097, z: 12.525971}
   m_LocalScale: {x: 1, y: 2.7308195, z: 1.5541}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -157,8 +157,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb49edb802ef78c4a9fe79c46fe1c71a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  prefabToSpawn: {fileID: 1963337640574875017, guid: 03a6f6ffa9dc52743be2e6cd22e881fc, type: 3}
+  prefabToSpawn: {fileID: 2152846756974554999, guid: 196aeb4d5ebfea745865979a1b36ec61, type: 3}
   spawnPoint: {fileID: 7497145905908334775}
   minTime: 3
   maxTime: 20
-  maxSpawnedNPC: 8
+  maxSpawnedNPC: 6
