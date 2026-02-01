@@ -1,5 +1,5 @@
 using UnityEngine;
-using UnityEngine.UI; // Required for handling Buttons
+using UnityEngine.UI;
 using UnityEngine.SceneManagement; 
 
 public class GameEndUI : MonoBehaviour
