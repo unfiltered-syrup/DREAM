@@ -1,10 +1,12 @@
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 public class ProgressBarController : MonoBehaviour
 {
     private Slider _slider;
     private PlayerLogic _playerLogic;
+    [SerializeField] private Volume damageVolume;
 
     [Header("Settings")]
     public float maxValue = 100f;
@@ -33,6 +35,7 @@ public class ProgressBarController : MonoBehaviour
 
             float currentProgress = _playerLogic.EyeContactDuration;
             _slider.value = Mathf.Clamp(currentProgress, 0f, maxValue);
+            damageVolume.weight = Mathf.Clamp01(currentProgress / maxValue);
         }
     }
 }
