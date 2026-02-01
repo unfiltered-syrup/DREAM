@@ -208,6 +208,10 @@ MonoBehaviour:
   inputSensitivity: 0.0025
   idleFallSpeed: 0.25
   smoothTime: 0.1
+  shakeFrequency: 12
+  calmMagnitude: 0.01
+  shakeMagnitude: 0.08
+  playerLogic: {fileID: 0}
 --- !u!114 &1866961069880278383
 MonoBehaviour:
   m_ObjectHideFlags: 0
