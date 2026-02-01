@@ -7,6 +7,8 @@ using UnityEngine.InputSystem;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
+
+    [SerializeField] private GameObject pauseMenuUI; 
     
     private bool isPaused;
 
@@ -19,18 +21,12 @@ public class GameManager : MonoBehaviour
         }
         Instance = this;
         
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
-    }
-
-    public void EndGame()
-    {
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+        ResumeGame();
     }
 
     private void Update()
     {
+        // Detect ESC key press
         if (Keyboard.current.escapeKey.wasPressedThisFrame)
         {
             TogglePause();
@@ -40,8 +36,43 @@ public class GameManager : MonoBehaviour
     public void TogglePause()
     {
         isPaused = !isPaused;
-        Time.timeScale = isPaused ? 0 : 1;
-        Cursor.lockState = isPaused ? CursorLockMode.None : CursorLockMode.Locked;
-        Cursor.visible = isPaused;
+
+        if (isPaused)
+        {
+            PauseGame();
+        }
+        else
+        {
+            ResumeGame();
+        }
+    }
+
+    private void PauseGame()
+    {
+        Time.timeScale = 0f; 
+        
+        if (pauseMenuUI != null) 
+            pauseMenuUI.SetActive(true); 
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+
+    public void ResumeGame()
+    {
+        isPaused = false;
+        Time.timeScale = 1f;
+        
+        if (pauseMenuUI != null) 
+            pauseMenuUI.SetActive(false);
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false; 
+    }
+
+    public void EndGame()
+    {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 }
