@@ -8,19 +8,17 @@ using Unity.Properties;
 [NodeDescription(name: "Detect Contact & Eye Contact", story: "Check contact with [Player] and increment timer", category: "Action", id: "detect_eye_contact_simple")]
 public partial class EyeContactAction : Action
 {
-    // Prerequisites
     [SerializeReference] public BlackboardVariable<bool> PlayerInRange = new BlackboardVariable<bool>(false);
     [SerializeReference] public BlackboardVariable<GameObject> Player = new BlackboardVariable<GameObject>();
     [SerializeReference] public BlackboardVariable<Transform> NPCHead = new BlackboardVariable<Transform>();
-
-    // Settings
     [SerializeReference] public BlackboardVariable<float> ContactDistance = new BlackboardVariable<float>(2.0f);
+    [SerializeReference] public BlackboardVariable<float> TurnSpeed = new BlackboardVariable<float>(5.0f);
     [SerializeReference] public BlackboardVariable<bool> ShowDebug = new BlackboardVariable<bool>(true);
 
     private PlayerLogic _playerLogic;
     private float _sqrThreshold;
-    private int _layerMaskBlocker;
-    private int _layerMaskDefault;
+    private int _combinedLayerMask;
+
     protected override Status OnStart()
     {
         if (GameObject == null || Player.Value == null || NPCHead.Value == null)
@@ -29,17 +27,12 @@ public partial class EyeContactAction : Action
         }
 
         _playerLogic = Player.Value.GetComponent<PlayerLogic>();
-        if (_playerLogic == null)
-        {
-            if (ShowDebug.Value) Debug.LogWarning("Target Player does not have PlayerLogic script!");
-            return Status.Failure;
-        }
 
         _sqrThreshold = ContactDistance.Value * ContactDistance.Value;
 
-        _layerMaskBlocker = LayerMask.GetMask("Blocker");
-        _layerMaskDefault = LayerMask.GetMask("Default");
-
+        int blockerMask = LayerMask.GetMask("Blocker");
+        int defaultMask = LayerMask.GetMask("Default");
+        _combinedLayerMask = blockerMask | defaultMask;
 
         return Status.Running;
     }
@@ -50,10 +43,22 @@ public partial class EyeContactAction : Action
         if (Player.Value == null) return Status.Failure;
 
         float sqrDist = (GameObject.transform.position - Player.Value.transform.position).sqrMagnitude;
-        
         if (sqrDist > _sqrThreshold)
         {
             return Status.Running; 
+        }
+
+        Vector3 lookDirection = Player.Value.transform.position - GameObject.transform.position;
+        lookDirection.y = 0;
+        
+        if (lookDirection != Vector3.zero)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(lookDirection);
+            GameObject.transform.rotation = Quaternion.Slerp(
+                GameObject.transform.rotation, 
+                targetRotation, 
+                Time.deltaTime * TurnSpeed.Value
+            );
         }
 
         Transform playerHead = _playerLogic.HeadTransform;
@@ -64,7 +69,7 @@ public partial class EyeContactAction : Action
 
         RaycastHit hitInfo;
         
-        bool isBlocked = Physics.Raycast(startPos, direction, out hitInfo, distance, _layerMaskBlocker) || Physics.Raycast(startPos, direction, out hitInfo, distance, _layerMaskDefault);
+        bool isBlocked = Physics.Raycast(startPos, direction, out hitInfo, distance, _combinedLayerMask);
 
         if (!isBlocked)
         {
