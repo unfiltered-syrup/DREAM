@@ -6,7 +6,7 @@ using Action = Unity.Behavior.Action;
 using Unity.Properties;
 
 [Serializable, GeneratePropertyBag]
-[NodeDescription(name: "Walk To Random Point (Animated)", story: "Agent walks to random point with animation", category: "Action", id: "18563d8e164a7802bd67c18bd5cb2aac")]
+[NodeDescription(name: "Walk To Random Point", story: "Agent walks to random point (yields to others)", category: "Action", id: "walk_random_low_priority")]
 public partial class WalkToRandomPointAction : Action
 {
     [SerializeReference] public BlackboardVariable<float> SearchRadius = new BlackboardVariable<float>(10f);
@@ -22,7 +22,6 @@ public partial class WalkToRandomPointAction : Action
     {
         if (AgentObject.Value == null)
         {
-            // Fallback to the object running the graph
             _agent = GameObject.GetComponent<NavMeshAgent>();
             _animator = GameObject.GetComponent<Animator>();
         }
@@ -34,13 +33,14 @@ public partial class WalkToRandomPointAction : Action
 
         if (_agent == null) return Status.Failure;
 
-        // Prepare Animator
         if (_animator != null)
         {
             _speedHash = Animator.StringToHash("Speed");
         }
 
         _agent.speed = MoveSpeed.Value;
+
+        _agent.avoidancePriority = 99; 
 
         Vector3 randomPoint = GetRandomPoint(GameObject.transform.position, SearchRadius.Value);
         
@@ -76,7 +76,12 @@ public partial class WalkToRandomPointAction : Action
 
     protected override void OnEnd()
     {
-        if (_agent != null && _agent.isOnNavMesh) _agent.ResetPath();
+        if (_agent != null && _agent.isOnNavMesh)
+        {
+            _agent.ResetPath();
+            _agent.avoidancePriority = 50;
+        }
+        
         if (_animator != null) _animator.SetFloat(_speedHash, 0f);
     }
 
